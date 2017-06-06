@@ -40,6 +40,19 @@ open class AKImageCropperOverlayView: UIView {
     
     internal var cropRect: CGRect = .zero
     
+    /** Image ratio */
+    internal var ratio: CGSize = CGSize(width: 1, height: 1) {
+        didSet {
+            cropRect.size.width = cropRect.size.height * ratio.width / ratio.height;
+            
+            /* Update UI for the crop rectange */
+            layoutSubviews()
+            
+            /* Delegates */
+            delegate?.cropperOverlayViewDidChangeCropRect(self, cropRect)
+        }
+    }
+    
     /** Saved crop rectangle state */
     
     fileprivate var touchesBegan: (touch: CGPoint, cropRect: CGRect)!
@@ -133,6 +146,12 @@ open class AKImageCropperOverlayView: UIView {
     open var image: UIImage! {
         didSet {
             imageView.image = image
+        }
+    }
+    
+    open var aspectRatio: CGSize = CGSize(width: 1, height: 1) {
+        didSet {
+            ratio = aspectRatio
         }
     }
     
@@ -877,6 +896,8 @@ open class AKImageCropperOverlayView: UIView {
                 cropRect.origin.y = cropRectMaxFrame.minY
                 cropRect.size.height = touchesBegan.cropRect.maxY - cropRectMaxFrame.minY
             }
+            
+            cropRect.size.width = cropRect.size.height * aspectRatio.width / aspectRatio.height
         }
         
         if activeCropAreaPart.contains(.rightEdge) {
@@ -894,6 +915,8 @@ open class AKImageCropperOverlayView: UIView {
             if point.x < minStickPoint || cropRect.width < configuraiton.minCropRectSize.width {
                 cropRect.size.width = configuraiton.minCropRectSize.width
             }
+            
+            cropRect.size.height = cropRect.size.width * aspectRatio.height / aspectRatio.width
         }
         
         if activeCropAreaPart.contains(.bottomEdge) {
@@ -911,12 +934,15 @@ open class AKImageCropperOverlayView: UIView {
             if point.y < minStickPoint || cropRect.height < configuraiton.minCropRectSize.height {
                 cropRect.size.height = configuraiton.minCropRectSize.height
             }
+            
+            cropRect.size.width = cropRect.size.height * aspectRatio.width / aspectRatio.height
         }
         
         if activeCropAreaPart.contains(.leftEdge) {
             
             cropRect.origin.x += translationPoint.x
             cropRect.size.width -= translationPoint.x
+            
             
             let pointInEdge = touchesBegan.touch.x - touchesBegan.cropRect.minX
             let minStickPoint = pointInEdge + cropRectMaxFrame.minX
@@ -931,6 +957,8 @@ open class AKImageCropperOverlayView: UIView {
                 cropRect.origin.x = cropRectMaxFrame.minX
                 cropRect.size.width = touchesBegan.cropRect.maxX - cropRectMaxFrame.minX
             }
+            
+            cropRect.size.height = cropRect.size.width * aspectRatio.height / aspectRatio.width;
         }
 
         /* Update UI for the crop rectange */

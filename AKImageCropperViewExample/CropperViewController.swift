@@ -211,6 +211,7 @@ final class CropperViewController: UIViewController {
         
         cropView.delegate = self
         cropView.image = image
+        cropView.overlayView?.aspectRatio = CGSize(width: 16, height: 9)
     }
 }
 
