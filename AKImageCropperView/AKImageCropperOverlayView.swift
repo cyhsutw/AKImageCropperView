@@ -142,6 +142,8 @@ open class AKImageCropperOverlayView: UIView {
         view.backgroundColor = UIColor.clear
         return view
     }()
+
+    fileprivate let roundMaskLayer = CAShapeLayer()
     
     open var image: UIImage! {
         didSet {
@@ -326,6 +328,16 @@ open class AKImageCropperOverlayView: UIView {
             gridView.alpha = 0
         }
 
+
+        let path = UIBezierPath(rect: cropRect)
+        path.usesEvenOddFillRule = true
+        path.append(UIBezierPath(ovalIn: cropRect))
+        roundMaskLayer.path = path.cgPath
+        roundMaskLayer.fillRule = kCAFillRuleEvenOdd
+        roundMaskLayer.fillColor = UIColor.black.cgColor
+        roundMaskLayer.opacity = 0.5
+        roundMaskLayer.frame = bounds
+        layer.addSublayer(roundMaskLayer)
     }
     
     //  MARK: - Life cycle
@@ -396,6 +408,12 @@ open class AKImageCropperOverlayView: UIView {
         
         gridView.frame = cropRect
         layoutGridView(gridView, gridViewHorizontalLines: gridViewHorizontalLines, gridViewVerticalLines: gridViewVerticalLines)
+
+        let path = UIBezierPath(rect: cropRect)
+        path.usesEvenOddFillRule = true
+        path.append(UIBezierPath(ovalIn: cropRect))
+        roundMaskLayer.path = path.cgPath
+        layer.addSublayer(roundMaskLayer)
     }
     
     //  MARK: Crop rectangle parts rects
