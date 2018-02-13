@@ -144,7 +144,13 @@ open class AKImageCropperOverlayView: UIView {
     }()
 
     fileprivate let roundMaskLayer = CAShapeLayer()
-    
+
+    public var showsRoundMask: Bool {
+        didSet {
+            roundMaskLayer.isHidden = !showsRoundMask
+        }
+    }
+
     open var image: UIImage! {
         didSet {
             imageView.image = image
