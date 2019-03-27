@@ -339,7 +339,7 @@ open class AKImageCropperOverlayView: UIView {
         path.usesEvenOddFillRule = true
         path.append(UIBezierPath(ovalIn: cropRect))
         roundMaskLayer.path = path.cgPath
-        roundMaskLayer.fillRule = kCAFillRuleEvenOdd
+        roundMaskLayer.fillRule = CAShapeLayerFillRule.evenOdd
         roundMaskLayer.fillColor = UIColor.black.cgColor
         roundMaskLayer.opacity = 0.5
         roundMaskLayer.frame = bounds
@@ -530,7 +530,7 @@ open class AKImageCropperOverlayView: UIView {
             return
         }
         
-        let animations: () -> Void = { _ in
+        let animations: () -> Void = { 
             self.gridView.alpha = show ? 1 : 0
         }
         
